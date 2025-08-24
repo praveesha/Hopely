@@ -7,8 +7,8 @@ public enum UserRole {
 
 // Hospital approval status
 public enum HospitalStatus {
-    APPROVED,
-    REJECTED,
+    ACTIVE, // Hospital has changed their default password, hence operational
+    INACTIVE, // The hospital hasn't activated the account yet
     SUSPENDED
 }
 
