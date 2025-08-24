@@ -6,7 +6,7 @@ import Navigation from "../components/Navigation";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 via-amber-50 to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-amber-50">
       <Navigation />
 
       {/* Hero Section */}
@@ -16,14 +16,14 @@ export default function Home() {
             {/* Left side - Content */}
             <div className="animate-fade-in-up">
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-                <span className="block text-zinc-800">Connecting</span>
-                <span className="block bg-gradient-to-r from-green-400 to-orange-400 bg-clip-text text-transparent">
+                <span className="block text-gray-800">Connecting</span>
+                <span className="block bg-gradient-to-r from-emerald-500 to-amber-500 bg-clip-text text-transparent">
                   Hope
                 </span>
-                <span className="block text-zinc-800">with Help</span>
+                <span className="block text-gray-800">with Help</span>
               </h1>
 
-              <p className="text-xl text-zinc-600 mb-8 leading-relaxed">
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 Hopely bridges the gap between those in need and generous
                 hearts. Get medicine, essential donations, and support when you
                 need it most.
@@ -32,13 +32,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/signup"
-                  className="px-8 py-4 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-full font-semibold text-lg hover:from-green-500 hover:to-green-600 transition-all duration-200 transform hover:scale-105 shadow-xl text-center"
+                  className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-full font-semibold text-lg hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-xl text-center"
                 >
                   Get Started
                 </Link>
                 <Link
                   href="/about"
-                  className="px-8 py-4 bg-stone-50 border-2 border-green-400 text-green-600 rounded-full font-semibold text-lg hover:bg-green-50 transition-all duration-200 text-center"
+                  className="px-8 py-4 bg-white border-2 border-emerald-500 text-emerald-600 rounded-full font-semibold text-lg hover:bg-emerald-50 transition-all duration-200 text-center"
                 >
                   Learn More
                 </Link>
@@ -48,7 +48,7 @@ export default function Home() {
             {/* Right side - Visual */}
             <div className="relative">
               <div className="animate-float">
-                <div className="relative w-full h-96 bg-gradient-to-br from-green-300 via-green-400 to-orange-300 rounded-3xl shadow-2xl overflow-hidden">
+                <div className="relative w-full h-96 bg-gradient-to-br from-emerald-400 via-emerald-500 to-amber-400 rounded-3xl shadow-2xl overflow-hidden">
                   <div className="absolute inset-0 bg-white bg-opacity-10 backdrop-blur-sm"></div>
                   <div className="relative z-10 p-8 h-full flex flex-col justify-center items-center text-white">
                     <div className="w-24 h-24 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center mb-6">
@@ -71,9 +71,9 @@ export default function Home() {
               </div>
 
               {/* Floating elements */}
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-orange-300 to-orange-400 rounded-2xl animate-bounce opacity-80"></div>
+              <div className="absolute -top-4 -left-4 w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-500 rounded-2xl animate-bounce opacity-80"></div>
               <div
-                className="absolute -bottom-4 -right-4 w-12 h-12 bg-gradient-to-br from-green-300 to-green-400 rounded-xl animate-bounce opacity-80"
+                className="absolute -bottom-4 -right-4 w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-xl animate-bounce opacity-80"
                 style={{ animationDelay: "1s" }}
               ></div>
             </div>
@@ -85,14 +85,14 @@ export default function Home() {
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold text-zinc-800 mb-6">
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-6">
               How{" "}
-              <span className="bg-gradient-to-r from-green-400 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-500 to-amber-500 bg-clip-text text-transparent">
                 Hopely
               </span>{" "}
               Works
             </h2>
-            <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Simple steps to connect those who need help with those who can
               provide it
             </p>
@@ -101,7 +101,7 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Feature 1 */}
             <div className="glass rounded-3xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-300 to-green-400 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -116,10 +116,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-zinc-800 mb-4 text-center">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Create Request
               </h3>
-              <p className="text-zinc-600 text-center leading-relaxed">
+              <p className="text-gray-600 text-center leading-relaxed">
                 Share your need for medicine or essential items with our caring
                 community
               </p>
@@ -130,7 +130,7 @@ export default function Home() {
               className="glass rounded-3xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
               style={{ animationDelay: "0.2s" }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-orange-300 to-orange-400 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-500 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -145,10 +145,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-zinc-800 mb-4 text-center">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Get Matched
               </h3>
-              <p className="text-zinc-600 text-center leading-relaxed">
+              <p className="text-gray-600 text-center leading-relaxed">
                 Our system connects you with verified donors who can help with
                 your specific needs
               </p>
@@ -159,7 +159,7 @@ export default function Home() {
               className="glass rounded-3xl p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
               style={{ animationDelay: "0.4s" }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-orange-300 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-amber-400 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -174,10 +174,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold text-zinc-800 mb-4 text-center">
+              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">
                 Receive Help
               </h3>
-              <p className="text-zinc-600 text-center leading-relaxed">
+              <p className="text-gray-600 text-center leading-relaxed">
                 Get the support you need safely and securely through our trusted
                 platform
               </p>
@@ -189,7 +189,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-green-400 to-orange-400 rounded-3xl p-12 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 to-amber-500 rounded-3xl p-12 text-white relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-4xl lg:text-5xl font-bold mb-6">
                 Ready to Make a Difference?
@@ -201,13 +201,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/signup"
-                  className="px-8 py-4 bg-white text-green-600 rounded-full font-semibold text-lg hover:bg-stone-100 transition-all duration-200 transform hover:scale-105"
+                  className="px-8 py-4 bg-white text-emerald-600 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-200 transform hover:scale-105"
                 >
                   Join as Helper
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200"
+                  className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-full font-semibold text-lg hover:bg-white hover:text-emerald-600 transition-all duration-200"
                 >
                   Request Help
                 </Link>
@@ -219,18 +219,18 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-zinc-800 text-stone-100 py-12 px-6">
+      <footer className="bg-gray-900 text-white py-12 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-6">
-            <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-orange-400 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-amber-400 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">H</span>
             </div>
             <span className="text-2xl font-bold">Hopely</span>
           </div>
-          <p className="text-stone-300 mb-6">
+          <p className="text-gray-400 mb-6">
             Connecting hope with help, one person at a time.
           </p>
-          <p className="text-stone-400 text-sm">
+          <p className="text-gray-500 text-sm">
             © 2025 Hopely. All rights reserved.
           </p>
         </div>
