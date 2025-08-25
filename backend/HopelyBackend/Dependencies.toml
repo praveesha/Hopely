@@ -115,6 +115,7 @@ modules = [
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.auth"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.donations"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.medicine"},
+	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.models"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.rbac"}
 ]
 
