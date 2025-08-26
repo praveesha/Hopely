@@ -28,7 +28,7 @@ const Graphs: React.FC = () => {
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="requests" fill="#31D467" />
+            <Bar dataKey="requests" fill="#3AC74C" />
           </BarChart>
         </ResponsiveContainer>
       </div>
