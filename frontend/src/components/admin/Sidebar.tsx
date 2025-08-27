@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Database, Heart, Users, Settings } from "lucide-react";
+import { Home, Database, Heart, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,7 +13,7 @@ const Sidebar = () => {
     { name: "Hospitals", icon: Users, path: "/admin/Hospitals" },
     { name: "Medicine Requests", icon: Database, path: "/admin/MedicineRequests" },
     { name: "Donations", icon: Heart, path: "/admin/Donations" },
-    { name: "Settings", icon: Settings, path: "/admin/Settings" },
+   
   ];
 
   return (

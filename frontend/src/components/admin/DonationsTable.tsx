@@ -1,7 +1,7 @@
 const donations = [
-  { donor: "John", amount: "200", purpose: "Medicine", status: "Approved" },
-  { donor: "Mary", amount: "100", purpose: "Hospital", status: "Approved" },
-  { donor: "Alex", amount: "300", purpose: "Logistics", status: "Pending" },
+  { donor: "John", amount: "200", medicine: "Paracetamol", status: "Approved" },
+  { donor: "Mary", amount: "100", medicine: "Vitamin C", status: "Approved" },
+  { donor: "Alex", amount: "300", medicine: "Peracitamol", status: "Pending" },
 ];
 
 const DonationsTable: React.FC = () => {
@@ -13,7 +13,7 @@ const DonationsTable: React.FC = () => {
           <tr className="bg-gray-100 ">
             <th className="px-2 py-1 ">Donor</th>
             <th className="px-2 py-1">Amount</th>
-            <th className="px-2 py-1">Purpose</th>
+            <th className="px-2 py-1">Medicine</th>
             <th className="px-2 py-1">Status</th>
           </tr>
         </thead>
@@ -22,7 +22,7 @@ const DonationsTable: React.FC = () => {
             <tr key={idx} className="border-b">
               <td className="px-2 py-1">{don.donor}</td>
               <td className="px-2 py-1">Rs. {don.amount}</td>
-              <td className="px-2 py-1">{don.purpose}</td>
+              <td className="px-2 py-1">{don.medicine}</td>
               <td className="px-2 py-1">
                 <span
                   className={`px-2 py-0.5 rounded ${
