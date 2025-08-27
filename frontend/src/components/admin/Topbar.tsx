@@ -1,4 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
+
 import React, { useEffect, useState } from "react";
 
 interface Admin {
@@ -10,21 +12,14 @@ const Topbar: React.FC = () => {
   const [admin, setAdmin] = useState<Admin | null>(null);
 
   useEffect(() => {
-    // Replace this with your backend API call later
+    // Replace with API later
     const fetchAdmin = async () => {
-      try {
-        // Example: const res = await fetch("/api/admin/me");
-        // const data = await res.json();
-        const data: Admin = {
-          name: "Admin name", // temporary placeholder
-          photo: "https://via.placeholder.com/40",
-        };
-        setAdmin(data);
-      } catch (error) {
-        console.error("Failed to fetch admin info:", error);
-      }
+      const data: Admin = {
+        name: "Admin name",
+        photo: "https://via.placeholder.com/40",
+      };
+      setAdmin(data);
     };
-
     fetchAdmin();
   }, []);
 
@@ -54,7 +49,7 @@ const Topbar: React.FC = () => {
             className="w-10 h-10 rounded-full"
           />
           <div>
-          <span className="font-medium text-green-600">{admin?.name || "Admin"}</span>
+            <span className="font-medium text-green-600">{admin?.name || "Admin"}</span>
           </div>
         </div>
       </div>

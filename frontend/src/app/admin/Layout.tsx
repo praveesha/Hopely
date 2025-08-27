@@ -1,21 +1,22 @@
-import React from 'react'
-import Sidebar from '../../components/admin/Sidebar'
-import { Outlet } from 'react-router-dom'
-import Topbar from '../../components/admin/Topbar'
+"use client";
 
+import Sidebar from "@/components/admin/Sidebar";
+import Topbar from "@/components/admin/Topbar";
 
-const Layout = () => {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <>
-    <Topbar />
-    <div className='flex'>
-        <Sidebar />
-        <div className='flex-1 px-4 py-10 md:px-10 h-[calc(100vh-64px)] overflow-y-auto'>
-            <Outlet />
-        </div>
+    <div className="flex h-screen w-full ">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <Topbar />
+        <main className="p-4 space-y-6 overflow-auto">
+          {children}
+        </main>   
+      </div>
     </div>
-    </>
-  )
+  );
 }
-
-export default Layout

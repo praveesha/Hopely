@@ -1,7 +1,7 @@
 const donations = [
-  { donor: "John", amount: "$200", purpose: "Medicine", status: "Approved" },
-  { donor: "Mary", amount: "$100", purpose: "Hospital", status: "Approved" },
-  { donor: "Alex", amount: "$300", purpose: "Logistics", status: "Pending" },
+  { donor: "John", amount: "200", purpose: "Medicine", status: "Approved" },
+  { donor: "Mary", amount: "100", purpose: "Hospital", status: "Approved" },
+  { donor: "Alex", amount: "300", purpose: "Logistics", status: "Pending" },
 ];
 
 const DonationsTable: React.FC = () => {
@@ -21,7 +21,7 @@ const DonationsTable: React.FC = () => {
           {donations.map((don, idx) => (
             <tr key={idx} className="border-b">
               <td className="px-2 py-1">{don.donor}</td>
-              <td className="px-2 py-1">{don.amount}</td>
+              <td className="px-2 py-1">Rs. {don.amount}</td>
               <td className="px-2 py-1">{don.purpose}</td>
               <td className="px-2 py-1">
                 <span

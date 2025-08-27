@@ -1,4 +1,4 @@
-"use client"; // required for hooks like usePathname
+"use client";
 
 import { Home, Database, Heart, Users, Settings } from "lucide-react";
 import Link from "next/link";
