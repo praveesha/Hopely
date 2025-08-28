@@ -1,3 +1,4 @@
+import ballerina/http;
 import ballerina/io;
 import ballerina/time;
 import ballerina/uuid;
@@ -34,6 +35,30 @@ public function main() returns error? {
     }
 
     io:println("🎉 Hopely Backend is ready!");
+
+    // Start HTTP server to keep the backend running
+    io:println("🌐 Starting HTTP server on port 8080...");
+    io:println("🔗 Visit: http://localhost:8080/api/health to check status");
+    io:println("⏹️  Press Ctrl+C to stop the server");
+}
+
+// Simple health check service to keep the server running
+service /api on new http:Listener(8080) {
+    resource function get health() returns json {
+        return {
+            "status": "healthy",
+            "message": "Hopely Backend is running!",
+            "timestamp": time:utcToString(time:utcNow())
+        };
+    }
+
+    resource function get info() returns json {
+        return {
+            "name": "Hopely Medical Donation System",
+            "version": "1.0.0",
+            "description": "Government medical donation platform for Sri Lanka"
+        };
+    }
 }
 
 function testUserOperations(EnvConfig config) returns error? {
