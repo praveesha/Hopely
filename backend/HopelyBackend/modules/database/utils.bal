@@ -25,30 +25,12 @@ public function testConnection() returns boolean {
 
     if dbResult is mongodb:Error {
         log:printError("Failed to get database", dbResult);
-        error? closeErr = mongoResult->close();
+        error? closeResult = mongoResult->close();
         return false;
     }
 
     // Close connection
-    error? closeErr = mongoResult->close();
+    error? closeResult = mongoResult->close();
     log:printInfo("✅ Successfully tested MongoDB connection!");
     return true;
-}
-
-// Create a client for operations (caller responsible for closing)
-public function createClient() returns mongodb:Client|error {
-    string mongoUri = os:getEnv("MONGODB_URI") != "" ? <string>os:getEnv("MONGODB_URI") : "mongodb://localhost:27017";
-
-    mongodb:ConnectionConfig config = {
-        connection: mongoUri
-    };
-
-    mongodb:Client|mongodb:Error result = new (config);
-
-    if result is mongodb:Error {
-        log:printError("Failed to create MongoDB client", result);
-        return result;
-    }
-
-    return result;
 }

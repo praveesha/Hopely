@@ -89,3 +89,10 @@ public type JWTPayload record {
     int exp; // Expiration time (1 h = 3600 s)
     string? hospitalId?; // Include hospital ID in JWT for hospital accounts
 };
+
+public type ApiResponse record {
+    boolean success;
+    string message;
+    json? data?;
+    string[]? errors?;
+};
