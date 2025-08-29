@@ -1,14 +1,14 @@
 // User roles in the system
 public enum UserRole {
     ADMIN,
-    DONOR, 
+    DONOR,
     HOSPITAL
 }
 
 // Hospital approval status
 public enum HospitalStatus {
-    APPROVED,
-    REJECTED,
+    ACTIVE, // Hospital has changed their default password, hence operational
+    INACTIVE, // The hospital hasn't activated the account yet
     SUSPENDED
 }
 
@@ -18,18 +18,17 @@ public type User record {
     string email;
     string passwordHash;
     UserRole role;
-    string createdAt;
-    string? firstName?;
-    string? lastName?;
-    string? phoneNumber?;
-
+    string firstName;
+    string lastName;
+    string phoneNumber?;
     // Hospital-specific fields (only for HOSPITAL role)
-    string? hospitalName?;
-    string? hospitalId?;
-    string? location?; //Grama Niladhari Division
-    string? hospitalPhone?;
-    string? contactPersonName?;
-    HospitalStatus? hospitalStatus?;
+    string? hospitalName;
+    string? hospitalAddress;
+    string? hospitalLicense;
+    HospitalStatus? hospitalStatus;
+    // Audit fields
+    string createdAt;
+    string updatedAt;
 };
 
 // Request/Response structures

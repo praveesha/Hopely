@@ -8,8 +8,9 @@ distribution = "2201.12.3"
 observabilityIncluded = true
 
 [dependencies]
-ballerina.http = "*"
-ballerina.jwt = "*"
-ballerina.crypto = "*"
-ballerina.time = "*"
-ballerina.uuid = "*"
+"ballerina/http" = "*"
+"ballerina/jwt" = "*" 
+"ballerina/crypto" = "*"
+"ballerina/time" = "*"
+"ballerina/uuid" = "*"
+"ballerinax/mongodb" = "*"
