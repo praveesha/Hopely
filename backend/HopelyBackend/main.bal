@@ -44,6 +44,16 @@ public function main() returns error? {
 
 // Simple health check service to keep the server running
 service /api on new http:Listener(8080) {
+
+    // CORS configuration
+    resource function options .(http:Caller caller) returns error? {
+        http:Response response = new;
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        check caller->respond(response);
+    }
+
     resource function get health() returns json {
         return {
             "status": "healthy",
@@ -98,4 +108,4 @@ function testUserOperations(EnvConfig config) returns error? {
     io:println("✅ Found user: " + foundUser.firstName + " " + foundUser.lastName);
 
     io:println("🎯 All user operations completed successfully!");
-}
+
