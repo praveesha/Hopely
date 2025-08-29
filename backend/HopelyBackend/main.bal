@@ -108,5 +108,4 @@ function testUserOperations(EnvConfig config) returns error? {
     io:println("✅ Found user: " + foundUser.firstName + " " + foundUser.lastName);
 
     io:println("🎯 All user operations completed successfully!");
-}
 
