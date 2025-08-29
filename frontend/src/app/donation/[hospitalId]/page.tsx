@@ -50,13 +50,9 @@ export default function HospitalDetailPage() {
     })();
   }, [hospitalId]);
 
-  const onParcel = (m: Shortage) => {
-    // TODO: implement
-    console.log("[parcel]", hospitalId, m);
-  };
-  const onMoney = (m: Shortage) => {
-    // TODO: implement
-    console.log("[money]", hospitalId, m);
+  const goDonate = (medName: string, hospitalId: string, hospitalName: string) => {
+    const qs = new URLSearchParams({ m: medName, n: hospitalName }).toString();
+    router.push(`/donation/${encodeURIComponent(hospitalId)}/donate?${qs}`);
   };
 
   return (
@@ -113,11 +109,11 @@ export default function HospitalDetailPage() {
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 gap-2">
-                  <button onClick={() => onParcel(m)} className="px-3 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition text-sm">
-                    Parcel
-                  </button>
-                  <button onClick={() => onMoney(m)} className="px-3 py-2 rounded-lg border border-green-600 text-green-700 hover:bg-green-50 transition text-sm">
-                    Money
+                  <button
+                    onClick={() => goDonate(m.medicine, hospitalId, hospitalName)}
+                    className="px-3 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition text-sm"
+                  >
+                    Donate now
                   </button>
                 </div>
               </div>
