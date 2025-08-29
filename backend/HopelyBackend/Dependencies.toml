@@ -377,7 +377,5 @@ modules = [
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.database"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.donations"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.medicine"},
-	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.models"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.rbac"}
 ]
-

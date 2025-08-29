@@ -1,39 +1,6 @@
 import ballerina/io;
 import ballerinax/mongodb;
 
-// User roles in the system
-public enum UserRole {
-    ADMIN,
-    DONOR,
-    HOSPITAL
-}
-
-// Hospital approval status  
-public enum HospitalStatus {
-    ACTIVE, // Hospital has changed their default password, hence operational
-    INACTIVE, // The hospital hasn't activated the account yet
-    SUSPENDED
-}
-
-// User record structure
-public type User record {
-    string id;
-    string email;
-    string passwordHash;
-    UserRole role;
-    string firstName;
-    string lastName;
-    string phoneNumber?;
-    // Hospital-specific fields (only for HOSPITAL role)
-    string? hospitalName;
-    string? hospitalAddress;
-    string? hospitalLicense;
-    HospitalStatus? hospitalStatus;
-    // Audit fields
-    string createdAt;
-    string updatedAt;
-};
-
 public function createUser(EnvConfig config, User user) returns string|error {
     io:println("👤 Creating new user: " + user.email);
 
