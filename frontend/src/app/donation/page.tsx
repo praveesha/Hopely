@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/Donations/Navbar";
 
-type Hospital = { _id?: string; name?: string; location?: string };
+type Hospital = { _id?: string; name?: string; location?: string; hospitalId?: string };
 
 export default function DonationPage() {
   const [hospitals, setHospitals] = useState<Hospital[]>([]);
@@ -102,7 +102,7 @@ export default function DonationPage() {
           )}
 
             {filteredHospitals.map((h) => {
-              const id = h._id ?? `${h.name}-${h.location ?? ""}`;
+              const id = h.hospitalId ?? h._id ?? (h.name || "unknown");
               const href = `/donation/${encodeURIComponent(id)}?name=${encodeURIComponent(h.name ?? "Hospital")}`;
               return (
                 <a
@@ -112,6 +112,7 @@ export default function DonationPage() {
                 >
                   <div className="font-medium">{h.name}</div>
                   {h.location && <div className="text-sm text-gray-500">{h.location}</div>}
+                  {h.hospitalId && <div className="text-[11px] text-gray-400 mt-1">#{h.hospitalId}</div>}
                 </a>
               );
             })}

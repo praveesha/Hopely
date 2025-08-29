@@ -1,30 +1,30 @@
-import { MongoClient, Db } from "mongodb";
+// src/lib/mongo.ts
+import { MongoClient, ServerApiVersion } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.DB_NAME || "hopely_db";
+const dbName = process.env.DB_NAME;
 
-if (!uri) throw new Error("Missing MONGODB_URI in .env.local");
+if (!uri) throw new Error("MONGODB_URI is not set");
+if (!dbName) throw new Error("DB_NAME is not set");
 
-declare global {
-  // eslint-disable-next-line no-var
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
+// Reuse the client across hot reloads in dev
+let client: MongoClient | null = (global as any)._mongoClient ?? null;
+let clientPromise: Promise<MongoClient> | null = (global as any)._mongoClientPromise ?? null;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
-
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri);
-    global._mongoClientPromise = client.connect();
-  }
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(uri);
+if (!clientPromise) {
+  client = new MongoClient(uri, {
+    serverApi: { version: ServerApiVersion.v1, strict: true, deprecationErrors: true },
+  });
   clientPromise = client.connect();
+  (global as any)._mongoClient = client;
+  (global as any)._mongoClientPromise = clientPromise;
 }
 
-export async function getDb(): Promise<Db> {
-  const c = await clientPromise;
+export async function getClient() {
+  return clientPromise!;
+}
+
+export async function getDb() {
+  const c = await getClient();
   return c.db(dbName);
 }
