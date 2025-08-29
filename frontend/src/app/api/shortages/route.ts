@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     // Generate shortage data
     const shortageId = uuidv4()
     const timestamp = new Date().toISOString()
-    const hospitalId = "hospital_123" // TODO: Get from JWT token
+    const hospitalId = "CGH_001" // TODO: Get from JWT token
     const createdBy = "admin@hospital.lk" // TODO: Get from JWT token
 
     // Create shortage document

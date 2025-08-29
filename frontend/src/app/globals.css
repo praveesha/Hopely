@@ -68,3 +68,89 @@ body {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
+
+/* Placeholder text styling for better visibility */
+::placeholder {
+  color: #374151 !important; /* Gray-700 - Much darker with !important */
+  opacity: 1 !important;
+  font-weight: 500;
+  font-style: italic;
+}
+
+::-webkit-input-placeholder {
+  color: #374151 !important;
+  opacity: 1 !important;
+  font-weight: 500;
+  font-style: italic;
+}
+
+::-moz-placeholder {
+  color: #374151 !important;
+  opacity: 1 !important;
+  font-weight: 500;
+  font-style: italic;
+}
+
+:-ms-input-placeholder {
+  color: #374151 !important;
+  opacity: 1 !important;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* Modern input styling */
+input, textarea, select {
+  transition: all 0.2s ease-in-out;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder,
+select:focus::placeholder {
+  color: #4B5563 !important;
+  transform: translateY(-2px);
+  font-style: normal;
+}
+
+/* Additional high contrast placeholder for specific input types */
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="tel"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #1F2937 !important; /* Gray-800 - Very dark for maximum visibility */
+  font-weight: 600;
+}
+
+/* For dark mode */
+@media (prefers-color-scheme: dark) {
+  ::placeholder {
+    color: #9CA3AF; /* Gray-400 for better contrast in dark mode */
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  ::-webkit-input-placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  ::-moz-placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  :-ms-input-placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  input:focus::placeholder,
+  textarea:focus::placeholder,
+  select:focus::placeholder {
+    color: #D1D5DB;
+    font-style: normal;
+  }
+}

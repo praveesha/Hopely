@@ -18,8 +18,19 @@ import {
   PlusCircle,
   Trash2,
 } from "lucide-react";
+import {
+  MedicineShortage,
+  CreateShortageRequest,
+  UrgencyLevel,
+} from "@/models/MedicineRequest";
+import {
+  createShortage,
+  getShortagesByHospital,
+  cancelShortage,
+  ApiResponse,
+} from "@/lib/shortageApi";
 
-// Types based on your Ballerina backend
+// Types based on your backend
 interface HospitalDetails {
   hospitalName: string;
   hospitalId: string;
@@ -29,18 +40,6 @@ interface HospitalDetails {
   contactPersonName: string;
   contactPersonTitle: string;
   additionalNotes?: string;
-}
-
-interface MedicineShortage {
-  id: string;
-  medicineName: string;
-  genericName?: string;
-  urgencyLevel: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
-  quantityNeeded: number;
-  unit: string;
-  description?: string;
-  datePosted: string;
-  expirationDate?: string;
 }
 
 export default function HospitalDashboard() {
@@ -53,7 +52,7 @@ export default function HospitalDashboard() {
   // Hospital profile data
   const [hospitalDetails, setHospitalDetails] = useState<HospitalDetails>({
     hospitalName: "Colombo General Hospital",
-    hospitalId: "CGH-001",
+    hospitalId: "CGH_001",
     email: "admin@cgh.health.gov.lk",
     location: "Colombo 08, Western Province",
     hospitalPhone: "+94-11-2691111",
@@ -62,87 +61,114 @@ export default function HospitalDashboard() {
     additionalNotes: "Leading tertiary care hospital in Sri Lanka",
   });
 
-  // Medicine shortages data
-  const [shortages, setShortages] = useState<MedicineShortage[]>([
-    {
-      id: "1",
-      medicineName: "Paracetamol 500mg",
-      genericName: "Acetaminophen",
-      urgencyLevel: "HIGH",
-      quantityNeeded: 5000,
-      unit: "tablets",
-      description: "Urgent need for fever management",
-      datePosted: "2025-08-25",
-      expirationDate: "2026-08-25",
-    },
-    {
-      id: "2",
-      medicineName: "Insulin Glargine",
-      urgencyLevel: "CRITICAL",
-      quantityNeeded: 200,
-      unit: "vials",
-      description: "Critical shortage for diabetic patients",
-      datePosted: "2025-08-24",
-    },
-  ]);
+  // Medicine shortages data - will be loaded from API
+  const [shortages, setShortages] = useState<MedicineShortage[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [newShortage, setNewShortage] = useState<
-    Omit<MedicineShortage, "id" | "datePosted">
-  >({
+  const [newShortage, setNewShortage] = useState<CreateShortageRequest>({
     medicineName: "",
     genericName: "",
-    urgencyLevel: "MEDIUM",
+    urgencyLevel: UrgencyLevel.MEDIUM,
     quantityNeeded: 0,
     unit: "",
     description: "",
     expirationDate: "",
   });
 
-  const getUrgencyColor = (level: string) => {
+  const getUrgencyColor = (level: UrgencyLevel) => {
     switch (level) {
-      case "CRITICAL":
+      case UrgencyLevel.CRITICAL:
         return "bg-red-100 text-red-800 border-red-200";
-      case "HIGH":
+      case UrgencyLevel.HIGH:
         return "bg-orange-100 text-orange-800 border-orange-200";
-      case "MEDIUM":
+      case UrgencyLevel.MEDIUM:
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "LOW":
+      case UrgencyLevel.LOW:
         return "bg-green-100 text-green-800 border-green-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
+  // Load shortages on component mount
+  useEffect(() => {
+    loadShortages();
+  }, []);
+
+  const loadShortages = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log(
+        "🔄 Loading shortages for hospital:",
+        hospitalDetails.hospitalId
+      );
+      const response = await getShortagesByHospital(hospitalDetails.hospitalId);
+      console.log("📡 API response:", response);
+      if (response.success && response.data) {
+        console.log("✅ Shortages loaded:", response.data);
+        setShortages(response.data);
+      } else {
+        console.log("❌ API response error:", response.message);
+        setError(response.message || "Failed to load shortages");
+      }
+    } catch (err) {
+      console.error("❌ Error loading shortages:", err);
+      setError("Failed to load shortages");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSaveProfile = () => {
-    // Here you would make an API call to your Ballerina backend
+    // Here you would make an API call to your backend for hospital profile
     console.log("Saving hospital profile:", hospitalDetails);
     setIsEditingProfile(false);
-    // TODO: Add actual API call to backend
+    // TODO: Add actual API call for hospital profile
   };
 
-  const handleAddShortage = () => {
-    const shortage: MedicineShortage = {
-      ...newShortage,
-      id: Date.now().toString(),
-      datePosted: new Date().toISOString().split("T")[0],
-    };
-    setShortages([shortage, ...shortages]);
-    setNewShortage({
-      medicineName: "",
-      genericName: "",
-      urgencyLevel: "MEDIUM",
-      quantityNeeded: 0,
-      unit: "",
-      description: "",
-      expirationDate: "",
-    });
-    setIsAddingShortage(false);
-    // TODO: Add actual API call to backend
+  const handleAddShortage = async () => {
+    try {
+      setError(null);
+      const response = await createShortage(newShortage);
+      if (response.success) {
+        // Reload shortages to get the latest data
+        await loadShortages();
+        // Reset form
+        setNewShortage({
+          medicineName: "",
+          genericName: "",
+          urgencyLevel: UrgencyLevel.MEDIUM,
+          quantityNeeded: 0,
+          unit: "",
+          description: "",
+          expirationDate: "",
+        });
+        setIsAddingShortage(false);
+      } else {
+        setError(response.message || "Failed to create shortage");
+      }
+    } catch (err) {
+      setError("Failed to create shortage");
+      console.error("Error creating shortage:", err);
+    }
   };
 
-  const handleDeleteShortage = (id: string) => {
-    setShortages(shortages.filter((s) => s.id !== id));
-    // TODO: Add actual API call to backend
+  const handleDeleteShortage = async (id: string) => {
+    try {
+      setError(null);
+      const response = await cancelShortage(hospitalDetails.hospitalId, id);
+      if (response.success) {
+        // Reload shortages to get the latest data
+        await loadShortages();
+      } else {
+        setError(response.message || "Failed to cancel shortage");
+      }
+    } catch (err) {
+      setError("Failed to cancel shortage");
+      console.error("Error cancelling shortage:", err);
+    }
   };
 
   return (
@@ -172,6 +198,14 @@ export default function HospitalDashboard() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Error Display */}
+        {error && (
+          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <strong className="font-bold">Error: </strong>
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* Navigation Tabs */}
         <nav className="flex space-x-8 mb-8">
           {[
@@ -204,7 +238,7 @@ export default function HospitalDashboard() {
                   <div>
                     <p className="text-sm text-gray-600">Active Shortages</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      {shortages.length}
+                      {loading ? "..." : shortages.length}
                     </p>
                   </div>
                 </div>
@@ -215,10 +249,11 @@ export default function HospitalDashboard() {
                   <div>
                     <p className="text-sm text-gray-600">Critical Items</p>
                     <p className="text-2xl font-bold text-gray-900">
-                      {
-                        shortages.filter((s) => s.urgencyLevel === "CRITICAL")
-                          .length
-                      }
+                      {loading
+                        ? "..."
+                        : shortages.filter(
+                            (s) => s.urgencyLevel === UrgencyLevel.CRITICAL
+                          ).length}
                     </p>
                   </div>
                 </div>
@@ -244,28 +279,38 @@ export default function HospitalDashboard() {
                 </h2>
               </div>
               <div className="p-6">
-                {shortages.slice(0, 3).map((shortage) => (
-                  <div
-                    key={shortage.id}
-                    className="flex items-center justify-between py-3 border-b last:border-b-0"
-                  >
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {shortage.medicineName}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Need: {shortage.quantityNeeded} {shortage.unit}
-                      </p>
-                    </div>
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded border ${getUrgencyColor(
-                        shortage.urgencyLevel
-                      )}`}
-                    >
-                      {shortage.urgencyLevel}
-                    </span>
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-gray-500">Loading shortages...</div>
                   </div>
-                ))}
+                ) : shortages.length === 0 ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="text-gray-500">No active shortages</div>
+                  </div>
+                ) : (
+                  shortages.slice(0, 3).map((shortage) => (
+                    <div
+                      key={shortage.id}
+                      className="flex items-center justify-between py-3 border-b last:border-b-0"
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {shortage.medicineName}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Need: {shortage.quantityNeeded} {shortage.unit}
+                        </p>
+                      </div>
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded border ${getUrgencyColor(
+                          shortage.urgencyLevel
+                        )}`}
+                      >
+                        {shortage.urgencyLevel}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -574,15 +619,15 @@ export default function HospitalDashboard() {
                       onChange={(e) =>
                         setNewShortage({
                           ...newShortage,
-                          urgencyLevel: e.target.value as any,
+                          urgencyLevel: e.target.value as UrgencyLevel,
                         })
                       }
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     >
-                      <option value="LOW">Low</option>
-                      <option value="MEDIUM">Medium</option>
-                      <option value="HIGH">High</option>
-                      <option value="CRITICAL">Critical</option>
+                      <option value={UrgencyLevel.LOW}>Low</option>
+                      <option value={UrgencyLevel.MEDIUM}>Medium</option>
+                      <option value={UrgencyLevel.HIGH}>High</option>
+                      <option value={UrgencyLevel.CRITICAL}>Critical</option>
                     </select>
                   </div>
                   <div>
@@ -673,73 +718,90 @@ export default function HospitalDashboard() {
             )}
 
             {/* Shortages List */}
-            <div className="grid grid-cols-1 gap-4">
-              {shortages.map((shortage) => (
-                <div
-                  key={shortage.id}
-                  className="bg-white p-6 rounded-lg shadow-sm border"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {shortage.medicineName}
-                        </h3>
-                        <span
-                          className={`px-2 py-1 text-xs font-medium rounded border ${getUrgencyColor(
-                            shortage.urgencyLevel
-                          )}`}
-                        >
-                          {shortage.urgencyLevel}
-                        </span>
-                      </div>
-                      {shortage.genericName && (
-                        <p className="text-sm text-gray-600 mb-2">
-                          Generic: {shortage.genericName}
-                        </p>
-                      )}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
-                        <div>
-                          <p className="text-sm text-gray-500">
-                            Quantity Needed
-                          </p>
-                          <p className="font-medium">
-                            {shortage.quantityNeeded} {shortage.unit}
-                          </p>
+            {loading ? (
+              <div className="flex items-center justify-center py-12 bg-white rounded-lg border">
+                <div className="text-gray-500">Loading shortages...</div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {shortages.map((shortage) => (
+                  <div
+                    key={shortage.id}
+                    className="bg-white p-6 rounded-lg shadow-sm border"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            {shortage.medicineName}
+                          </h3>
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded border ${getUrgencyColor(
+                              shortage.urgencyLevel
+                            )}`}
+                          >
+                            {shortage.urgencyLevel}
+                          </span>
                         </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Date Posted</p>
-                          <p className="font-medium">{shortage.datePosted}</p>
-                        </div>
-                        {shortage.expirationDate && (
+                        {shortage.genericName && (
+                          <p className="text-sm text-gray-600 mb-2">
+                            Generic: {shortage.genericName}
+                          </p>
+                        )}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
                           <div>
                             <p className="text-sm text-gray-500">
-                              Preferred Expiry
+                              Quantity Needed
                             </p>
                             <p className="font-medium">
-                              {shortage.expirationDate}
+                              {shortage.quantityNeeded} {shortage.unit}
                             </p>
                           </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Date Posted</p>
+                            <p className="font-medium">
+                              {new Date(
+                                shortage.datePosted
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                          {shortage.expirationDate && (
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Preferred Expiry
+                              </p>
+                              <p className="font-medium">
+                                {new Date(
+                                  shortage.expirationDate
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          )}
+                          <div>
+                            <p className="text-sm text-gray-500">Status</p>
+                            <p className="font-medium">{shortage.status}</p>
+                          </div>
+                        </div>
+                        {shortage.description && (
+                          <p className="text-sm text-gray-700 mt-3 p-3 bg-gray-50 rounded">
+                            {shortage.description}
+                          </p>
                         )}
                       </div>
-                      {shortage.description && (
-                        <p className="text-sm text-gray-700 mt-3 p-3 bg-gray-50 rounded">
-                          {shortage.description}
-                        </p>
-                      )}
+                      <button
+                        onClick={() => handleDeleteShortage(shortage.id)}
+                        className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Cancel shortage"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
-                    <button
-                      onClick={() => handleDeleteShortage(shortage.id)}
-                      className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
-            {shortages.length === 0 && (
+            {!loading && shortages.length === 0 && (
               <div className="text-center py-12 bg-white rounded-lg border">
                 <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
