@@ -379,4 +379,3 @@ modules = [
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.medicine"},
 	{org = "praveesha", packageName = "HopelyBackend", moduleName = "HopelyBackend.rbac"}
 ]
-

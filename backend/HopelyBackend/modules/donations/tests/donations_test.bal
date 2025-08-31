@@ -31,3 +31,10 @@ function negativeTestFunction() {
 function afterSuiteFunc() {
     io:println("I'm the after suite function!");
 }
+
+public function hello(string? name) returns string {
+    if name != null {
+        return "Hello, " + name;
+    }
+    return "Hello, World!";
+}

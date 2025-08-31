@@ -109,4 +109,3 @@ function testUserOperations(EnvConfig config) returns error? {
 
     io:println("🎯 All user operations completed successfully!");
 }
-
