@@ -32,6 +32,7 @@ import {
 import DonationProgress from "@/components/DonationProgress";
 import { DonationAPI } from "@/lib/donationApi";
 import { formatCurrency } from "@/lib/donationUtils";
+import Navigation from "@/components/Navigation";
 
 // Types based on your backend
 interface HospitalDetails {
@@ -221,42 +222,57 @@ export default function HospitalDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Building2 className="h-8 w-8 text-blue-600" />
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Hopely Hospital Portal
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                Welcome, {hospitalDetails.contactPersonName}
-              </span>
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-white" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-[#143f3f]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl"></div>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Navigation */}
+      <Navigation />
+
+      {/* Main Content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-[#143f3f]/10 mb-8">
+            <Building2 className="h-6 w-6 text-[#143f3f]" />
+            <span className="text-lg font-semibold text-[#143f3f]">
+              Hospital Dashboard
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-[#143f3f] via-emerald-600 to-[#143f3f] bg-clip-text text-transparent">
+              Welcome back,
+            </span>
+            <br />
+            <span className="text-[#143f3f] block text-4xl md:text-5xl lg:text-6xl mt-2">
+              {hospitalDetails.contactPersonName}
+            </span>
+          </h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Manage your hospital profile, post medicine shortages, and track
+            donations from your community.
+          </p>
+        </div>
+
         {/* Error Display */}
         {error && (
-          <div className="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <strong className="font-bold">Error: </strong>
-            <span>{error}</span>
+          <div className="mb-8 bg-red-50/80 backdrop-blur-sm border border-red-200 text-red-700 px-6 py-4 rounded-2xl shadow-lg">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-6 w-6 text-red-500" />
+              <div>
+                <strong className="font-bold">Error: </strong>
+                <span>{error}</span>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Navigation Tabs */}
-        <nav className="flex space-x-8 mb-8">
+        <nav className="flex flex-wrap gap-4 mb-12 justify-center">
           {[
             { id: "overview", label: "Overview", icon: Building2 },
             { id: "profile", label: "Hospital Profile", icon: Settings },
@@ -265,13 +281,13 @@ export default function HospitalDashboard() {
             <button
               key={id}
               onClick={() => setActiveTab(id as any)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`flex items-center gap-3 px-6 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg ${
                 activeTab === id
-                  ? "bg-blue-100 text-blue-700 border border-blue-200"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  ? "bg-gradient-to-r from-[#143f3f] to-emerald-600 text-white shadow-xl"
+                  : "bg-white/80 backdrop-blur-sm text-[#143f3f] hover:bg-white hover:shadow-xl border border-[#143f3f]/10"
               }`}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-6 w-6" />
               <span>{label}</span>
             </button>
           ))}
@@ -279,25 +295,33 @@ export default function HospitalDashboard() {
 
         {/* Overview Tab */}
         {activeTab === "overview" && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
-                <div className="flex items-center space-x-3">
-                  <AlertCircle className="h-8 w-8 text-red-500" />
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-[#143f3f]/10 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center">
+                    <AlertCircle className="h-8 w-8 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Active Shortages</p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-sm text-gray-600 font-medium">
+                      Active Shortages
+                    </p>
+                    <p className="text-3xl font-bold text-[#143f3f]">
                       {loading ? "..." : shortages.length}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
-                <div className="flex items-center space-x-3">
-                  <Calendar className="h-8 w-8 text-orange-500" />
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-[#143f3f]/10 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-400 rounded-2xl flex items-center justify-center">
+                    <Calendar className="h-8 w-8 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Critical Items</p>
-                    <p className="text-2xl font-bold text-gray-900">
+                    <p className="text-sm text-gray-600 font-medium">
+                      Critical Items
+                    </p>
+                    <p className="text-3xl font-bold text-[#143f3f]">
                       {loading
                         ? "..."
                         : shortages.filter(
@@ -307,60 +331,85 @@ export default function HospitalDashboard() {
                   </div>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-sm border">
-                <div className="flex items-center space-x-3">
-                  <Building2 className="h-8 w-8 text-green-500" />
+              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-[#143f3f]/10 hover:shadow-xl transition-all duration-300">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+                    <Building2 className="h-8 w-8 text-white" />
+                  </div>
                   <div>
-                    <p className="text-sm text-gray-600">Hospital Status</p>
-                    <p className="text-lg font-semibold text-green-700">
-                      Active
+                    <p className="text-sm text-gray-600 font-medium">
+                      Hospital Status
                     </p>
+                    <p className="text-3xl font-bold text-[#143f3f]">Active</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Recent Shortages */}
-            <div className="bg-white rounded-lg shadow-sm border">
-              <div className="p-6 border-b">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Recent Medicine Shortages
-                </h2>
-              </div>
-              <div className="p-6">
-                {loading ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="text-gray-500">Loading shortages...</div>
+            {/* Recent Activity */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-[#143f3f]/10 p-6">
+              <h3 className="text-xl font-bold text-[#143f3f] mb-6">
+                Recent Medicine Shortages
+              </h3>
+              {loading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-gray-500 text-lg">
+                    Loading shortages...
                   </div>
-                ) : shortages.length === 0 ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="text-gray-500">No active shortages</div>
+                </div>
+              ) : shortages.length === 0 ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <AlertCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <div className="text-gray-500 text-lg">
+                      No active shortages
+                    </div>
+                    <p className="text-gray-400 mt-2">
+                      Post your first medicine shortage to get started
+                    </p>
                   </div>
-                ) : (
-                  shortages.slice(0, 3).map((shortage) => (
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {shortages.slice(0, 3).map((shortage) => (
                     <div
                       key={shortage.id}
-                      className="flex items-center justify-between py-3 border-b last:border-b-0"
+                      className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl hover:bg-gray-50 transition-all duration-300"
                     >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {shortage.medicineName}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Need: {shortage.quantityNeeded} {shortage.unit}
-                        </p>
+                      <div className="flex items-center gap-4">
+                        <div
+                          className={`w-3 h-3 rounded-full ${
+                            shortage.urgencyLevel === UrgencyLevel.CRITICAL
+                              ? "bg-red-500"
+                              : shortage.urgencyLevel === UrgencyLevel.HIGH
+                              ? "bg-orange-500"
+                              : "bg-yellow-500"
+                          }`}
+                        />
+                        <div>
+                          <p className="font-semibold text-[#143f3f]">
+                            {shortage.medicineName}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Need: {shortage.quantityNeeded} {shortage.unit}
+                          </p>
+                        </div>
                       </div>
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded border ${getUrgencyColor(
-                          shortage.urgencyLevel
-                        )}`}
+                        className={`px-3 py-1 text-xs font-medium rounded-full ${
+                          shortage.urgencyLevel === UrgencyLevel.CRITICAL
+                            ? "bg-red-100 text-red-700"
+                            : shortage.urgencyLevel === UrgencyLevel.HIGH
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
                       >
                         {shortage.urgencyLevel}
                       </span>
                     </div>
-                  ))
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -417,10 +466,10 @@ export default function HospitalDashboard() {
                           hospitalName: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.hospitalName}
                     </p>
                   )}
@@ -432,7 +481,7 @@ export default function HospitalDashboard() {
                     <FileText className="h-4 w-4 inline mr-1" />
                     Hospital ID
                   </label>
-                  <p className="p-3 bg-gray-50 rounded-lg text-gray-600">
+                  <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                     {hospitalDetails.hospitalId}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
@@ -456,10 +505,10 @@ export default function HospitalDashboard() {
                           email: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.email}
                     </p>
                   )}
@@ -481,10 +530,10 @@ export default function HospitalDashboard() {
                           hospitalPhone: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.hospitalPhone}
                     </p>
                   )}
@@ -506,10 +555,10 @@ export default function HospitalDashboard() {
                           location: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.location}
                     </p>
                   )}
@@ -531,10 +580,10 @@ export default function HospitalDashboard() {
                           contactPersonName: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.contactPersonName}
                     </p>
                   )}
@@ -555,10 +604,10 @@ export default function HospitalDashboard() {
                           contactPersonTitle: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg">
+                    <p className="p-3 bg-gray-50 rounded-lg text-gray-900 font-medium">
                       {hospitalDetails.contactPersonTitle}
                     </p>
                   )}
@@ -579,11 +628,11 @@ export default function HospitalDashboard() {
                         })
                       }
                       rows={3}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Any additional information about your hospital..."
                     />
                   ) : (
-                    <p className="p-3 bg-gray-50 rounded-lg min-h-[80px]">
+                    <p className="p-3 bg-gray-50 rounded-lg min-h-[80px] text-gray-900 font-medium">
                       {hospitalDetails.additionalNotes || "No additional notes"}
                     </p>
                   )}
@@ -638,7 +687,7 @@ export default function HospitalDashboard() {
                           medicineName: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Paracetamol 500mg"
                     />
                   </div>
@@ -655,7 +704,7 @@ export default function HospitalDashboard() {
                           genericName: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Acetaminophen"
                     />
                   </div>
@@ -671,7 +720,7 @@ export default function HospitalDashboard() {
                           urgencyLevel: e.target.value as UrgencyLevel,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     >
                       <option value={UrgencyLevel.LOW}>Low</option>
                       <option value={UrgencyLevel.MEDIUM}>Medium</option>
@@ -699,7 +748,7 @@ export default function HospitalDashboard() {
                           estimatedFunding,
                         });
                       }}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="0"
                     />
                   </div>
@@ -713,7 +762,7 @@ export default function HospitalDashboard() {
                       onChange={(e) =>
                         setNewShortage({ ...newShortage, unit: e.target.value })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., tablets, vials, bottles"
                     />
                   </div>
@@ -730,7 +779,7 @@ export default function HospitalDashboard() {
                           expirationDate: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
                 </div>
@@ -777,7 +826,7 @@ export default function HospitalDashboard() {
                             estimatedFunding,
                           });
                         }}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                         placeholder="0.00"
                       />
                       <p className="text-xs text-gray-500 mt-1">
@@ -801,7 +850,7 @@ export default function HospitalDashboard() {
                             estimatedFunding: parseFloat(e.target.value) || 0,
                           })
                         }
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                         placeholder="0.00"
                         required
                       />
@@ -825,7 +874,7 @@ export default function HospitalDashboard() {
                           fundingNote: e.target.value,
                         })
                       }
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Based on current supplier quotes, includes 10% buffer"
                     />
                     <p className="text-xs text-gray-500 mt-1">
@@ -864,7 +913,7 @@ export default function HospitalDashboard() {
                       })
                     }
                     rows={3}
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    className="w-full p-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     placeholder="Provide additional details about the shortage..."
                   />
                 </div>

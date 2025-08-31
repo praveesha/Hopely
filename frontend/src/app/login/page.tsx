@@ -86,7 +86,7 @@ export default function Login() {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    className="w-full px-4 py-3 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none transition-all duration-200 bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500"
                     placeholder="Enter your email"
                     required
                   />
@@ -123,7 +123,7 @@ export default function Login() {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    className="w-full px-4 py-3 border border-stone-200 rounded-2xl focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none transition-all duration-200 bg-white/50 backdrop-blur-sm text-gray-900 placeholder-gray-500"
                     placeholder="Enter your password"
                     required
                   />

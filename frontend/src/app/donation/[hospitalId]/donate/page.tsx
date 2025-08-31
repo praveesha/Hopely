@@ -368,7 +368,7 @@ export default function DonatePage() {
                 min={100}
                 max={remainingFunding || undefined}
                 step={100}
-                className={`w-full p-2 border rounded-lg !placeholder:text-gray-900/90 ${
+                className={`w-full p-2 border rounded-lg text-gray-900 placeholder-gray-500 ${
                   !amountValidation.isValid
                     ? "border-red-300 focus:border-red-500"
                     : "border-stone-300"
@@ -405,7 +405,7 @@ export default function DonatePage() {
             <h2 className="font-medium text-gray-800">Your details</h2>
             <div className="mt-3 space-y-3">
               <input
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 placeholder="Your name (required) *"
                 value={form.donorName ?? ""}
                 onChange={(e) =>
@@ -415,7 +415,7 @@ export default function DonatePage() {
               />
               <input
                 type="email"
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 placeholder="Your email (required) *"
                 value={form.donorEmail ?? ""}
                 onChange={(e) =>
@@ -425,7 +425,7 @@ export default function DonatePage() {
               />
               <input
                 type="tel"
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 placeholder="Your phone number (required) *"
                 value={form.donorPhone ?? ""}
                 onChange={(e) =>
@@ -434,7 +434,7 @@ export default function DonatePage() {
                 required
               />
               <input
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 placeholder="Your address (optional)"
                 value={form.donorAddress ?? ""}
                 onChange={(e) =>
@@ -442,7 +442,7 @@ export default function DonatePage() {
                 }
               />
               <input
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 placeholder="Your city (optional)"
                 value={form.donorCity ?? ""}
                 onChange={(e) =>
@@ -450,7 +450,7 @@ export default function DonatePage() {
                 }
               />
               <textarea
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
+                className="w-full p-2 border border-stone-300 rounded-lg text-gray-900 placeholder-gray-500"
                 rows={3}
                 placeholder="Note (optional)"
                 value={form.note ?? ""}
