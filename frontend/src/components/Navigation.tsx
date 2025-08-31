@@ -62,12 +62,6 @@ const Navigation = () => {
               Contact
             </Link>
             <Link
-              href="/hospital/dashboard"
-              className="text-white/90 hover:text-amber-300 transition-colors duration-200 font-medium"
-            >
-              For Hospitals
-            </Link>
-            <Link
               href="#"
               className="text-white/90 hover:text-amber-300 transition-colors duration-200 font-medium"
             >
@@ -142,13 +136,6 @@ const Navigation = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
-              </Link>
-              <Link
-                href="/hospital/dashboard"
-                className="text-white/90 hover:text-amber-300 transition-colors duration-200 font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                For Hospitals
               </Link>
               <Link
                 href="#"
