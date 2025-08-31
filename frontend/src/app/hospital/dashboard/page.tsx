@@ -29,6 +29,9 @@ import {
   cancelShortage,
   ApiResponse,
 } from "@/lib/shortageApi";
+import DonationProgress from "@/components/DonationProgress";
+import { DonationAPI } from "@/lib/donationApi";
+import { formatCurrency } from "@/lib/donationUtils";
 
 // Types based on your backend
 interface HospitalDetails {
@@ -63,6 +66,9 @@ export default function HospitalDashboard() {
 
   // Medicine shortages data - will be loaded from API
   const [shortages, setShortages] = useState<MedicineShortage[]>([]);
+  const [donationProgress, setDonationProgress] = useState<
+    Record<string, { total_donated: number; donation_count: number }>
+  >({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,6 +80,11 @@ export default function HospitalDashboard() {
     unit: "",
     description: "",
     expirationDate: "",
+
+    // Funding Information
+    estimatedFunding: 0,
+    costPerUnit: 0,
+    fundingNote: "",
   });
 
   const getUrgencyColor = (level: UrgencyLevel) => {
@@ -109,6 +120,44 @@ export default function HospitalDashboard() {
       if (response.success && response.data) {
         console.log("✅ Shortages loaded:", response.data);
         setShortages(response.data);
+
+        // Load donation progress for each shortage
+        const progressPromises = response.data.map(
+          async (shortage: MedicineShortage) => {
+            try {
+              const donationData = await DonationAPI.getDonationsByShortage(
+                shortage.id
+              );
+              return {
+                shortageId: shortage.id,
+                progress: donationData.success ? donationData.data : null,
+              };
+            } catch (err) {
+              console.warn(
+                `Failed to load donations for shortage ${shortage.id}:`,
+                err
+              );
+              return { shortageId: shortage.id, progress: null };
+            }
+          }
+        );
+
+        const progressResults = await Promise.all(progressPromises);
+        const progressMap: Record<
+          string,
+          { total_donated: number; donation_count: number }
+        > = {};
+
+        progressResults.forEach(({ shortageId, progress }) => {
+          if (progress) {
+            progressMap[shortageId] = {
+              total_donated: progress.total_donated,
+              donation_count: progress.donation_count,
+            };
+          }
+        });
+
+        setDonationProgress(progressMap);
       } else {
         console.log("❌ API response error:", response.message);
         setError(response.message || "Failed to load shortages");
@@ -637,12 +686,19 @@ export default function HospitalDashboard() {
                     <input
                       type="number"
                       value={newShortage.quantityNeeded}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const quantityNeeded = parseInt(e.target.value) || 0;
+                        const estimatedFunding =
+                          (newShortage.costPerUnit || 0) > 0 &&
+                          quantityNeeded > 0
+                            ? (newShortage.costPerUnit || 0) * quantityNeeded
+                            : newShortage.estimatedFunding || 0;
                         setNewShortage({
                           ...newShortage,
-                          quantityNeeded: parseInt(e.target.value),
-                        })
-                      }
+                          quantityNeeded,
+                          estimatedFunding,
+                        });
+                      }}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="0"
                     />
@@ -677,23 +733,140 @@ export default function HospitalDashboard() {
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
-                  <div className="md:col-span-2">
+                </div>
+
+                {/* Funding Information Section */}
+                <div className="mt-6 border-t pt-6">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg
+                      className="w-5 h-5 mr-2 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                      />
+                    </svg>
+                    Funding Information
+                  </h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Cost Per Unit */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Cost Per Unit (LKR)
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newShortage.costPerUnit || 0}
+                        onChange={(e) => {
+                          const costPerUnit = parseFloat(e.target.value) || 0;
+                          const estimatedFunding =
+                            costPerUnit > 0 && newShortage.quantityNeeded > 0
+                              ? costPerUnit * newShortage.quantityNeeded
+                              : newShortage.estimatedFunding || 0;
+                          setNewShortage({
+                            ...newShortage,
+                            costPerUnit,
+                            estimatedFunding,
+                          });
+                        }}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="0.00"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Optional: Cost per {newShortage.unit || "unit"}
+                      </p>
+                    </div>
+
+                    {/* Estimated Total Funding */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Estimated Total Funding (LKR) *
+                      </label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={newShortage.estimatedFunding || 0}
+                        onChange={(e) =>
+                          setNewShortage({
+                            ...newShortage,
+                            estimatedFunding: parseFloat(e.target.value) || 0,
+                          })
+                        }
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="0.00"
+                        required
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Total amount needed to fulfill this shortage
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Funding Note */}
+                  <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description
+                      Funding Calculation Note
                     </label>
-                    <textarea
-                      value={newShortage.description}
+                    <input
+                      type="text"
+                      value={newShortage.fundingNote || ""}
                       onChange={(e) =>
                         setNewShortage({
                           ...newShortage,
-                          description: e.target.value,
+                          fundingNote: e.target.value,
                         })
                       }
-                      rows={3}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
-                      placeholder="Provide additional details about the shortage..."
+                      placeholder="e.g., Based on current supplier quotes, includes 10% buffer"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Optional: Explain how the funding amount was calculated
+                    </p>
                   </div>
+
+                  {/* Auto-calculation display */}
+                  {(newShortage.costPerUnit || 0) > 0 &&
+                    newShortage.quantityNeeded > 0 && (
+                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-medium">Auto-calculation:</span>{" "}
+                          {(newShortage.costPerUnit || 0).toLocaleString()} LKR
+                          × {newShortage.quantityNeeded} {newShortage.unit} ={" "}
+                          {(
+                            (newShortage.costPerUnit || 0) *
+                            newShortage.quantityNeeded
+                          ).toLocaleString()}{" "}
+                          LKR
+                        </p>
+                      </div>
+                    )}
+                </div>
+
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    value={newShortage.description}
+                    onChange={(e) =>
+                      setNewShortage({
+                        ...newShortage,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={3}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                    placeholder="Provide additional details about the shortage..."
+                  />
                 </div>
                 <div className="mt-6 flex justify-end space-x-3">
                   <button
@@ -757,6 +930,16 @@ export default function HospitalDashboard() {
                               {shortage.quantityNeeded} {shortage.unit}
                             </p>
                           </div>
+                          {shortage.estimatedFunding && (
+                            <div>
+                              <p className="text-sm text-gray-500">
+                                Estimated Funding
+                              </p>
+                              <p className="font-medium text-green-600">
+                                {formatCurrency(shortage.estimatedFunding)}
+                              </p>
+                            </div>
+                          )}
                           <div>
                             <p className="text-sm text-gray-500">Date Posted</p>
                             <p className="font-medium">
@@ -765,26 +948,58 @@ export default function HospitalDashboard() {
                               ).toLocaleDateString()}
                             </p>
                           </div>
-                          {shortage.expirationDate && (
-                            <div>
-                              <p className="text-sm text-gray-500">
-                                Preferred Expiry
-                              </p>
-                              <p className="font-medium">
-                                {new Date(
-                                  shortage.expirationDate
-                                ).toLocaleDateString()}
-                              </p>
-                            </div>
-                          )}
                           <div>
                             <p className="text-sm text-gray-500">Status</p>
                             <p className="font-medium">{shortage.status}</p>
                           </div>
                         </div>
+
+                        {/* Funding Progress Section */}
+                        {shortage.estimatedFunding &&
+                          shortage.estimatedFunding > 0 && (
+                            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                              <h4 className="text-sm font-medium text-gray-700 mb-3">
+                                Donation Progress
+                              </h4>
+                              <DonationProgress
+                                totalDonated={
+                                  donationProgress[shortage.id]
+                                    ?.total_donated || 0
+                                }
+                                estimatedFunding={shortage.estimatedFunding}
+                                showPercentage={true}
+                                showAmounts={true}
+                                className="mb-2"
+                              />
+                              <div className="flex justify-between items-center text-xs text-gray-600">
+                                <span>
+                                  {donationProgress[shortage.id]
+                                    ?.donation_count || 0}{" "}
+                                  donation
+                                  {(donationProgress[shortage.id]
+                                    ?.donation_count || 0) !== 1
+                                    ? "s"
+                                    : ""}{" "}
+                                  received
+                                </span>
+                                {shortage.costPerUnit && (
+                                  <span>
+                                    Cost per unit:{" "}
+                                    {formatCurrency(shortage.costPerUnit)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         {shortage.description && (
                           <p className="text-sm text-gray-700 mt-3 p-3 bg-gray-50 rounded">
                             {shortage.description}
+                          </p>
+                        )}
+                        {shortage.fundingNote && (
+                          <p className="text-xs text-gray-600 mt-2 italic">
+                            <strong>Funding Note:</strong>{" "}
+                            {shortage.fundingNote}
                           </p>
                         )}
                       </div>

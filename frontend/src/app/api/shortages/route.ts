@@ -57,7 +57,13 @@ export async function POST(request: NextRequest) {
       status: ShortageStatus.ACTIVE,
       contactEmail: "", // TODO: Get from hospital profile
       createdBy: createdBy,
-      updatedBy: createdBy
+      updatedBy: createdBy,
+      
+      // Funding Information
+      estimatedFunding: body.estimatedFunding || null,
+      fundingCurrency: 'LKR',
+      costPerUnit: body.costPerUnit || null,
+      fundingNote: body.fundingNote || null,
     }
 
     console.log("🏥 Creating new medicine shortage:", body.medicineName)

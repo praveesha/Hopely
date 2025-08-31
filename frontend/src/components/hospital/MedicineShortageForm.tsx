@@ -47,6 +47,11 @@ interface MedicineShortage {
   description?: string;
   datePosted: string;
   expirationDate?: string;
+
+  // Funding Information
+  estimatedFunding?: number;
+  costPerUnit?: number;
+  fundingNote?: string;
 }
 
 interface MedicineShortageFormProps {
@@ -71,6 +76,11 @@ export default function MedicineShortageForm({
     unit: initialData?.unit || "",
     description: initialData?.description || "",
     expirationDate: initialData?.expirationDate || "",
+
+    // Funding Information
+    estimatedFunding: initialData?.estimatedFunding || 0,
+    costPerUnit: initialData?.costPerUnit || 0,
+    fundingNote: initialData?.fundingNote || "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -88,6 +98,30 @@ export default function MedicineShortageForm({
 
     if (formData.quantityNeeded <= 0) {
       newErrors.quantityNeeded = "Quantity must be greater than 0";
+    }
+
+    // Funding validation
+    if (formData.estimatedFunding < 0) {
+      newErrors.estimatedFunding = "Estimated funding cannot be negative";
+    }
+
+    if (formData.costPerUnit < 0) {
+      newErrors.costPerUnit = "Cost per unit cannot be negative";
+    }
+
+    // Auto-calculate estimated funding if costPerUnit is provided
+    if (formData.costPerUnit > 0 && formData.quantityNeeded > 0) {
+      const calculatedTotal = formData.costPerUnit * formData.quantityNeeded;
+      if (
+        formData.estimatedFunding > 0 &&
+        Math.abs(formData.estimatedFunding - calculatedTotal) > 1
+      ) {
+        newErrors.estimatedFunding = `Based on cost per unit (${
+          formData.costPerUnit
+        } × ${
+          formData.quantityNeeded
+        }), estimated funding should be around LKR ${calculatedTotal.toLocaleString()}`;
+      }
     }
 
     setErrors(newErrors);
@@ -110,6 +144,9 @@ export default function MedicineShortageForm({
         unit: "",
         description: "",
         expirationDate: "",
+        estimatedFunding: 0,
+        costPerUnit: 0,
+        fundingNote: "",
       });
       onClose();
     } catch (error) {
@@ -120,7 +157,24 @@ export default function MedicineShortageForm({
   };
 
   const handleChange = (field: string, value: string | number) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const newData = { ...prev, [field]: value };
+
+      // Auto-calculate estimated funding when cost per unit or quantity changes
+      if (field === "costPerUnit" || field === "quantityNeeded") {
+        const costPerUnit =
+          field === "costPerUnit" ? Number(value) : prev.costPerUnit;
+        const quantityNeeded =
+          field === "quantityNeeded" ? Number(value) : prev.quantityNeeded;
+
+        if (costPerUnit > 0 && quantityNeeded > 0) {
+          newData.estimatedFunding = costPerUnit * quantityNeeded;
+        }
+      }
+
+      return newData;
+    });
+
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
@@ -257,6 +311,124 @@ export default function MedicineShortageForm({
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                 />
               </div>
+            </div>
+
+            {/* Funding Information Section */}
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <svg
+                  className="w-5 h-5 mr-2 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  />
+                </svg>
+                Funding Information
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Cost Per Unit */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Cost Per Unit (LKR)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.costPerUnit}
+                    onChange={(e) =>
+                      handleChange(
+                        "costPerUnit",
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
+                      errors.costPerUnit ? "border-red-300" : "border-gray-300"
+                    }`}
+                    placeholder="0.00"
+                  />
+                  {errors.costPerUnit && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.costPerUnit}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Optional: Cost per {formData.unit || "unit"}
+                  </p>
+                </div>
+
+                {/* Estimated Total Funding */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Estimated Total Funding (LKR)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.estimatedFunding}
+                    onChange={(e) =>
+                      handleChange(
+                        "estimatedFunding",
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                    className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 ${
+                      errors.estimatedFunding
+                        ? "border-red-300"
+                        : "border-gray-300"
+                    }`}
+                    placeholder="0.00"
+                  />
+                  {errors.estimatedFunding && (
+                    <p className="text-red-600 text-sm mt-1">
+                      {errors.estimatedFunding}
+                    </p>
+                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Total amount needed to fulfill this shortage
+                  </p>
+                </div>
+              </div>
+
+              {/* Funding Note */}
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Funding Calculation Note
+                </label>
+                <input
+                  type="text"
+                  value={formData.fundingNote}
+                  onChange={(e) => handleChange("fundingNote", e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                  placeholder="e.g., Based on current supplier quotes, includes 10% buffer"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Optional: Explain how the funding amount was calculated
+                </p>
+              </div>
+
+              {/* Auto-calculation display */}
+              {formData.costPerUnit > 0 && formData.quantityNeeded > 0 && (
+                <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-medium">Auto-calculation:</span>{" "}
+                    {formData.costPerUnit.toLocaleString()} LKR ×{" "}
+                    {formData.quantityNeeded} {formData.unit} ={" "}
+                    {(
+                      formData.costPerUnit * formData.quantityNeeded
+                    ).toLocaleString()}{" "}
+                    LKR
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Description */}

@@ -28,6 +28,12 @@ export interface MedicineShortage {
   contactEmail: string;
   createdBy: string;
   updatedBy: string;
+  
+  // Funding Information
+  estimatedFunding?: number; // Amount in LKR
+  fundingCurrency?: string;  // Default: 'LKR'
+  costPerUnit?: number;      // Cost per unit in LKR (optional breakdown)
+  fundingNote?: string;      // Additional info about funding calculation
 }
 
 export interface CreateShortageRequest {
@@ -38,6 +44,11 @@ export interface CreateShortageRequest {
   unit: string;
   description?: string;
   expirationDate?: string;
+  
+  // Funding Information
+  estimatedFunding?: number; // Amount in LKR
+  costPerUnit?: number;      // Cost per unit in LKR (optional)
+  fundingNote?: string;      // Additional info about funding calculation
 }
 
 export interface UpdateShortageRequest {
@@ -49,4 +60,9 @@ export interface UpdateShortageRequest {
   description?: string;
   expirationDate?: string;
   status?: ShortageStatus;
+  
+  // Funding Information
+  estimatedFunding?: number; // Amount in LKR
+  costPerUnit?: number;      // Cost per unit in LKR (optional)
+  fundingNote?: string;      // Additional info about funding calculation
 }

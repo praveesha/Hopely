@@ -3,6 +3,8 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import Navbar from "../../../../components/Donations/Navbar";
+import DonationProgress from "../../../../components/DonationProgress";
+import { formatCurrency } from "../../../../lib/donationUtils";
 
 declare global {
   interface Window {
@@ -33,6 +35,11 @@ export default function DonatePage() {
 
   const hospitalName = useMemo(() => sp?.get("n") ?? "Hospital", [sp]);
   const medicine = useMemo(() => sp?.get("m") ?? "General support", [sp]);
+  const shortageId = useMemo(() => sp?.get("shortage_id") ?? null, [sp]);
+  const estimatedFunding = useMemo(
+    () => parseFloat(sp?.get("estimated_funding") ?? "0"),
+    [sp]
+  );
 
   const [form, setForm] = useState<PayForm>({
     donorCity: "Colombo",
@@ -40,6 +47,79 @@ export default function DonatePage() {
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [currentProgress, setCurrentProgress] = useState<{
+    total_donated: number;
+    donation_count: number;
+  } | null>(null);
+
+  // Load current donation progress
+  useEffect(() => {
+    if (shortageId) {
+      const loadProgress = async () => {
+        try {
+          const response = await fetch(
+            `/api/donations/by-shortage/${shortageId}`
+          );
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data) {
+              setCurrentProgress({
+                total_donated: result.data.total_donated,
+                donation_count: result.data.donation_count,
+              });
+            }
+          }
+        } catch (error) {
+          console.warn("Failed to load donation progress:", error);
+        }
+      };
+      loadProgress();
+    }
+  }, [shortageId]);
+
+  // Calculate remaining funding needed
+  const remainingFunding = useMemo(() => {
+    if (estimatedFunding > 0 && currentProgress) {
+      return Math.max(0, estimatedFunding - currentProgress.total_donated);
+    }
+    return null;
+  }, [estimatedFunding, currentProgress]);
+
+  // Check if donation amount is valid
+  const amountValidation = useMemo(() => {
+    if (!form.amount) return { isValid: true, message: null };
+
+    if (form.amount < 100) {
+      return { isValid: false, message: "Minimum donation amount is LKR 100" };
+    }
+
+    if (remainingFunding !== null) {
+      if (remainingFunding <= 0) {
+        return {
+          isValid: false,
+          message:
+            "This shortage is already fully funded! Thank you for your interest.",
+        };
+      }
+
+      if (form.amount > remainingFunding) {
+        return {
+          isValid: false,
+          message: `Amount exceeds remaining need of LKR ${remainingFunding.toLocaleString()}. Please enter a smaller amount.`,
+        };
+      }
+
+      // Show helpful message if close to the limit
+      if (form.amount > remainingFunding * 0.8) {
+        return {
+          isValid: true,
+          message: `This will cover most of the remaining need (LKR ${remainingFunding.toLocaleString()} remaining)`,
+        };
+      }
+    }
+
+    return { isValid: true, message: null };
+  }, [form.amount, remainingFunding]);
 
   const handlePayment = async () => {
     setBusy(true);
@@ -56,6 +136,12 @@ export default function DonatePage() {
 
       if (!form.amount || form.amount < 100) {
         setErr("Please enter a donation amount of at least LKR 100");
+        return;
+      }
+
+      // Check funding validation
+      if (!amountValidation.isValid) {
+        setErr(amountValidation.message || "Invalid donation amount");
         return;
       }
 
@@ -78,7 +164,7 @@ export default function DonatePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           order_id: orderId,
-          shortage_id: `${hospitalId}_${medicine}`,
+          shortage_id: shortageId, // Use the actual shortage ID
           hospital_id: hospitalId,
           donor_name: form.donorName,
           donor_email: form.donorEmail,
@@ -217,37 +303,101 @@ export default function DonatePage() {
           <span className="font-medium">{medicine}</span> for the hospital.
         </p>
 
+        {/* Donation Progress Section */}
+        {estimatedFunding > 0 && currentProgress && (
+          <div className="mt-6 p-6 bg-white rounded-xl border border-stone-200">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Funding Progress
+            </h3>
+            <DonationProgress
+              totalDonated={currentProgress.total_donated}
+              estimatedFunding={estimatedFunding}
+              showPercentage={true}
+              showAmounts={true}
+              className="mb-3"
+            />
+            <div className="flex justify-between items-center text-sm">
+              <span className="text-gray-600">
+                {currentProgress.donation_count} donation
+                {currentProgress.donation_count !== 1 ? "s" : ""} received so
+                far
+              </span>
+              {remainingFunding !== null && (
+                <span
+                  className={`font-medium ${
+                    remainingFunding <= 0 ? "text-green-600" : "text-blue-600"
+                  }`}
+                >
+                  {remainingFunding <= 0
+                    ? "✅ Fully Funded!"
+                    : `LKR ${remainingFunding.toLocaleString()} remaining`}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div className="p-4 rounded-xl bg-white border border-stone-200">
             <h2 className="font-medium text-gray-800">Amount</h2>
             <div className="mt-3 grid grid-cols-4 gap-2">
-              {PRESETS.map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setForm({ ...form, amount: v })}
-                  className={`px-3 py-2 rounded-lg text-sm border ${
-                    form.amount === v
-                      ? "bg-green-600 text-white border-green-600"
-                      : "border-stone-300 text-gray-700 hover:bg-green-50"
-                  }`}
-                >
-                  LKR {v.toLocaleString()}
-                </button>
-              ))}
+              {PRESETS.map((v) => {
+                const isDisabled =
+                  remainingFunding !== null && v > remainingFunding;
+                return (
+                  <button
+                    key={v}
+                    onClick={() => setForm({ ...form, amount: v })}
+                    disabled={isDisabled}
+                    className={`px-3 py-2 rounded-lg text-sm border ${
+                      form.amount === v
+                        ? "bg-green-600 text-white border-green-600"
+                        : isDisabled
+                        ? "border-gray-200 text-gray-400 cursor-not-allowed"
+                        : "border-stone-300 text-gray-700 hover:bg-green-50"
+                    }`}
+                  >
+                    LKR {v.toLocaleString()}
+                  </button>
+                );
+              })}
             </div>
             <div className="mt-3">
               <input
                 type="number"
                 min={100}
+                max={remainingFunding || undefined}
                 step={100}
-                className="w-full p-2 border border-stone-300 rounded-lg !placeholder:text-gray-900/90"
-                placeholder="Custom amount (LKR)"
+                className={`w-full p-2 border rounded-lg !placeholder:text-gray-900/90 ${
+                  !amountValidation.isValid
+                    ? "border-red-300 focus:border-red-500"
+                    : "border-stone-300"
+                }`}
+                placeholder={
+                  remainingFunding !== null && remainingFunding > 0
+                    ? `Custom amount (Max: LKR ${remainingFunding.toLocaleString()})`
+                    : "Custom amount (LKR)"
+                }
                 value={form.amount ?? ""}
                 onChange={(e) =>
                   setForm({ ...form, amount: Number(e.target.value) })
                 }
               />
-              <p className="text-xs text-gray-500 mt-1">Minimum LKR 100</p>
+              <div className="mt-1 text-xs">
+                {amountValidation.message ? (
+                  <p
+                    className={
+                      amountValidation.isValid
+                        ? "text-blue-600"
+                        : "text-red-600"
+                    }
+                  >
+                    {amountValidation.message}
+                  </p>
+                ) : (
+                  <p className="text-gray-500">Minimum LKR 100</p>
+                )}
+              </div>
             </div>
           </div>
 
@@ -316,11 +466,27 @@ export default function DonatePage() {
 
             <div className="mt-4 flex gap-2">
               <button
-                disabled={busy || !form.amount || form.amount < 100}
+                disabled={
+                  busy ||
+                  !form.amount ||
+                  form.amount < 100 ||
+                  !amountValidation.isValid
+                }
                 onClick={handlePayment}
-                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                className={`px-4 py-2 rounded-lg text-white transition-colors ${
+                  busy ||
+                  !form.amount ||
+                  form.amount < 100 ||
+                  !amountValidation.isValid
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
               >
-                {busy ? "Processing…" : "Donate now with PayHere"}
+                {busy
+                  ? "Processing…"
+                  : remainingFunding !== null && remainingFunding <= 0
+                  ? "Fully Funded"
+                  : "Donate now with PayHere"}
               </button>
               <div className="text-xs text-gray-500 self-center">
                 (Secure payment via PayHere)

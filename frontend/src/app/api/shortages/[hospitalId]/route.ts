@@ -5,14 +5,14 @@ import { MedicineShortage, ShortageStatus, UrgencyLevel } from '@/models/Medicin
 // GET /api/shortages/[hospitalId] - Get shortages for a hospital
 export async function GET(
   request: NextRequest,
-  { params }: { params: { hospitalId: string } }
+  { params }: { params: Promise<{ hospitalId: string }> }
 ) {
   try {
     const client = await clientPromise
     const db = client.db('hopely_db')
     const shortageCollection = db.collection('medicine_shortages')
 
-    const { hospitalId } = params
+    const { hospitalId } = await params
 
     console.log("🔍 Getting shortages for hospital:", hospitalId)
 
@@ -62,7 +62,13 @@ export async function GET(
         status: doc.status as ShortageStatus || ShortageStatus.ACTIVE,
         contactEmail: doc.contactEmail || "",
         createdBy: doc.createdBy || "",
-        updatedBy: doc.updatedBy || ""
+        updatedBy: doc.updatedBy || "",
+        
+        // Funding Information
+        estimatedFunding: doc.estimatedFunding || undefined,
+        fundingCurrency: doc.fundingCurrency || undefined,
+        costPerUnit: doc.costPerUnit || undefined,
+        fundingNote: doc.fundingNote || undefined,
       }
     })
 
