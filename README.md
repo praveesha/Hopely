@@ -269,8 +269,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **Healthcare Workers**: The heroes who inspired this platform
-- **Donor Community**: Generous hearts making a difference
+- **Healthcare Workers**: The heroes who workd tirelessly
+- **Donor Community**: Generous hearts making a difference, including the all Sri Lankans who directly or indirectly contribute to the taxpayer community
 - **Technology Partners**: PayHere, MongoDB, and open-source community
 - **Development Team**: Passionate developers building for good
 
