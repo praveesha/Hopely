@@ -293,6 +293,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Section Separator */}
+      <div className="relative py-8 bg-gradient-to-b from-white/50 via-gray-50/50 to-gray-50/30">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="relative">
+            {/* Gradient Line */}
+            <div className="h-px bg-gradient-to-r from-transparent via-[#143f3f]/30 to-transparent"></div>
+
+            {/* Center Icon */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-12 h-12 bg-white border-2 border-[#143f3f]/20 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-6 h-6 bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Features Section */}
       <section className="py-20 px-6 bg-gray-50/30">
         <div className="max-w-7xl mx-auto">
@@ -489,13 +508,7 @@ export default function Home() {
               <p className="text-lg mb-4">
                 Join 3,890+ generous donors who've already made a difference
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link
-                  href="/signup"
-                  className="px-8 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white rounded-2xl font-semibold hover:bg-white/30 transition-all duration-300"
-                >
-                  Create Account
-                </Link>
+              <div className="flex justify-center">
                 <Link
                   href="/hospital/dashboard"
                   className="px-8 py-3 bg-transparent border-2 border-white/50 text-white rounded-2xl font-semibold hover:bg-white/10 transition-all duration-300"
@@ -512,17 +525,19 @@ export default function Home() {
       <footer className="bg-[#143f3f] text-white py-16 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-white rounded-2xl p-2 shadow-xl">
+            <div className="flex items-center justify-center mb-6">
+              <Link
+                href="/"
+                className="transition-transform duration-200 hover:scale-105"
+              >
                 <Image
                   src="/HopelyLogo.png"
-                  alt="Hopely Logo"
-                  width={32}
-                  height={32}
-                  className="w-full h-full object-contain"
+                  alt="Hopely"
+                  width={80}
+                  height={80}
+                  className="object-contain"
                 />
-              </div>
-              <span className="text-3xl font-bold">Hopely</span>
+              </Link>
             </div>
             <p className="text-emerald-200 mb-8 text-lg max-w-2xl mx-auto">
               Connecting hope with help, transforming lives through
