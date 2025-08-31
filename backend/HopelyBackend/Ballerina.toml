@@ -6,3 +6,11 @@ distribution = "2201.12.3"
 
 [build-options]
 observabilityIncluded = true
+
+[dependencies]
+"ballerina/http" = "*"
+"ballerina/jwt" = "*" 
+"ballerina/crypto" = "*"
+"ballerina/time" = "*"
+"ballerina/uuid" = "*"
+"ballerinax/mongodb" = "*"
