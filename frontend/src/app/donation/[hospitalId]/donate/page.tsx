@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import Navbar from "../../../../components/Donations/Navbar";
+import Navigation from "../../../../components/Navigation";
 import DonationProgress from "../../../../components/DonationProgress";
 import { formatCurrency } from "../../../../lib/donationUtils";
 
@@ -285,58 +285,109 @@ export default function DonatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFAF0]">
-      <Navbar />
-      <main className="max-w-4xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-white relative overflow-hidden">
+      {/* Universal Navigation */}
+      <Navigation />
+
+      {/* Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-[#143f3f]/5 rounded-full mix-blend-multiply filter blur-3xl animate-float"></div>
+        <div
+          className="absolute bottom-20 right-10 w-80 h-80 bg-amber-400/8 rounded-full mix-blend-multiply filter blur-3xl animate-float"
+          style={{ animationDelay: "3s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-yellow-300/6 rounded-full mix-blend-multiply filter blur-3xl animate-float"
+          style={{ animationDelay: "1.5s" }}
+        ></div>
+      </div>
+
+      <main className="relative z-10 max-w-4xl mx-auto px-6 py-8 pt-32">
         <button
           onClick={() => router.back()}
-          className="text-sm text-green-700 hover:underline"
+          className="inline-flex items-center gap-2 text-[#143f3f] hover:text-emerald-600 font-medium mb-8 px-4 py-2 rounded-full hover:bg-[#143f3f]/10 transition-all duration-300"
         >
-          ← Back
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          Back
         </button>
 
-        <h1 className="mt-2 text-2xl font-semibold text-green-700">
-          Donate to {hospitalName}
-        </h1>
-        <p className="text-gray-700 mt-1">
-          Your contribution will help us purchase{" "}
-          <span className="font-medium">{medicine}</span> for the hospital.
-        </p>
+        <header className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-[#143f3f]/10 backdrop-blur-sm rounded-full text-[#143f3f] text-sm font-medium mb-6">
+            <div className="w-2 h-2 bg-[#143f3f] rounded-full animate-pulse"></div>
+            Make a Donation
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-bold text-[#143f3f] mb-6 leading-tight">
+            Support{" "}
+            <span className="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-400 bg-clip-text text-transparent">
+              {hospitalName}
+            </span>
+          </h1>
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            Your contribution will help purchase{" "}
+            <span className="font-semibold text-[#143f3f]">{medicine}</span> for
+            patients in need.
+          </p>
+        </header>
 
         {/* Donation Progress Section */}
         {estimatedFunding > 0 && currentProgress && (
-          <div className="mt-6 p-6 bg-white rounded-xl border border-stone-200">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Funding Progress
-            </h3>
-            <DonationProgress
-              totalDonated={currentProgress.total_donated}
-              estimatedFunding={estimatedFunding}
-              showPercentage={true}
-              showAmounts={true}
-              className="mb-3"
-            />
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-600">
-                {currentProgress.donation_count} donation
-                {currentProgress.donation_count !== 1 ? "s" : ""} received so
-                far
-              </span>
-              {remainingFunding !== null && (
-                <span
-                  className={`font-medium ${
-                    remainingFunding <= 0 ? "text-green-600" : "text-blue-600"
-                  }`}
-                >
-                  {remainingFunding <= 0
-                    ? "✅ Fully Funded!"
-                    : `LKR ${remainingFunding.toLocaleString()} remaining`}
-                </span>
-              )}
+          <div className="mb-12">
+            <div className="glass rounded-3xl p-8 border border-gray-200">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-[#143f3f] mb-2">
+                  Funding Progress
+                </h3>
+                <p className="text-gray-600">
+                  See how close we are to our goal
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 border border-gray-100">
+                <DonationProgress
+                  totalDonated={currentProgress.total_donated}
+                  estimatedFunding={estimatedFunding}
+                  showPercentage={true}
+                  showAmounts={true}
+                  className="mb-4"
+                />
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-gray-600">
+                    {currentProgress.donation_count} donation
+                    {currentProgress.donation_count !== 1 ? "s" : ""} received
+                    so far
+                  </span>
+                  {remainingFunding !== null && (
+                    <span
+                      className={`font-medium ${
+                        remainingFunding <= 0
+                          ? "text-green-600"
+                          : "text-amber-600"
+                      }`}
+                    >
+                      {remainingFunding <= 0
+                        ? "✅ Fully Funded!"
+                        : `${formatCurrency(remainingFunding)} remaining`}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}
 
+        {/* Donation Form */}
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div className="p-4 rounded-xl bg-white border border-stone-200">
             <h2 className="font-medium text-gray-800">Amount</h2>
