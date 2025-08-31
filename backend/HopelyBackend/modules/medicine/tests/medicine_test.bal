@@ -25,6 +25,13 @@ function negativeTestFunction() {
     test:assertEquals(welcomeMsg, "Hello, World!");
 }
 
+function hello(string? n = ()) returns string {
+    if n is string {
+        return "Hello, " + n;
+    }
+    return "Hello, World!";
+}
+
 // After Suite Function
 
 @test:AfterSuite
