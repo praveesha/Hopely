@@ -136,8 +136,18 @@ export default function HospitalDetailPage() {
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-[#143f3f] hover:text-emerald-600 font-medium mb-8 px-4 py-2 rounded-full hover:bg-[#143f3f]/10 transition-all duration-300"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to Hospitals
         </button>
@@ -151,7 +161,8 @@ export default function HospitalDetailPage() {
             {hospitalName}
           </h1>
           <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            Current medicine shortages and funding progress. Your donation directly helps patients get the care they need.
+            Current medicine shortages and funding progress. Your donation
+            directly helps patients get the care they need.
           </p>
         </header>
 
@@ -159,7 +170,10 @@ export default function HospitalDetailPage() {
         {!loaded && !errMsg && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="glass rounded-3xl p-8 border border-gray-200 animate-pulse">
+              <div
+                key={i}
+                className="glass rounded-3xl p-8 border border-gray-200 animate-pulse"
+              >
                 <div className="flex items-start justify-between mb-6">
                   <div>
                     <div className="h-6 w-48 bg-gray-200 rounded-2xl mb-3" />
@@ -189,11 +203,23 @@ export default function HospitalDetailPage() {
           <div className="max-w-2xl mx-auto mt-8">
             <div className="glass p-8 text-red-700 bg-red-50/80 border border-red-200 rounded-3xl backdrop-blur-sm text-center">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-8 h-8 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold mb-2">Unable to Load Medicine Shortages</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Unable to Load Medicine Shortages
+              </h3>
               <p>{errMsg}</p>
             </div>
           </div>
@@ -205,11 +231,23 @@ export default function HospitalDetailPage() {
             {shortages.length === 0 && (
               <div className="text-center py-16">
                 <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-12 h-12 text-green-500"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-[#143f3f] mb-3">All Set!</h3>
+                <h3 className="text-2xl font-bold text-[#143f3f] mb-3">
+                  All Set!
+                </h3>
                 <p className="text-gray-600 text-lg">
                   No active medicine shortages at this time
                 </p>
@@ -225,7 +263,10 @@ export default function HospitalDetailPage() {
                 const totalDonated = progress?.total_donated || 0;
                 const donationCount = progress?.donation_count || 0;
                 const estimatedFunding = shortage.estimatedFunding || 0;
-                const progressPercentage = estimatedFunding > 0 ? Math.min((totalDonated / estimatedFunding) * 100, 100) : 0;
+                const progressPercentage =
+                  estimatedFunding > 0
+                    ? Math.min((totalDonated / estimatedFunding) * 100, 100)
+                    : 0;
 
                 return (
                   <div
@@ -238,8 +279,18 @@ export default function HospitalDetailPage() {
                         <div className="flex-1">
                           <div className="flex items-start gap-4 mb-4">
                             <div className="w-12 h-12 bg-gradient-to-br from-[#143f3f] to-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 8.172V5L8 4z" />
+                              <svg
+                                className="w-6 h-6 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 8.172V5L8 4z"
+                                />
                               </svg>
                             </div>
                             <div className="flex-1">
@@ -266,15 +317,21 @@ export default function HospitalDetailPage() {
                       {/* Medicine Details */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                         <div className="bg-gray-50 rounded-2xl p-4">
-                          <div className="text-sm text-gray-500 mb-1">Quantity Needed</div>
+                          <div className="text-sm text-gray-500 mb-1">
+                            Quantity Needed
+                          </div>
                           <div className="text-lg font-bold text-[#143f3f]">
                             {shortage.quantityNeeded.toLocaleString()}{" "}
-                            <span className="text-sm font-medium text-gray-600">{shortage.unit}</span>
+                            <span className="text-sm font-medium text-gray-600">
+                              {shortage.unit}
+                            </span>
                           </div>
                         </div>
                         {estimatedFunding > 0 && (
                           <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-4">
-                            <div className="text-sm text-gray-500 mb-1">Estimated Cost</div>
+                            <div className="text-sm text-gray-500 mb-1">
+                              Estimated Cost
+                            </div>
                             <div className="text-lg font-bold text-amber-700">
                               {formatCurrency(estimatedFunding)}
                             </div>
@@ -285,7 +342,9 @@ export default function HospitalDetailPage() {
                       {/* Description */}
                       {shortage.description && (
                         <div className="bg-blue-50 rounded-2xl p-4 mb-6">
-                          <div className="text-sm text-gray-500 mb-2">Details</div>
+                          <div className="text-sm text-gray-500 mb-2">
+                            Details
+                          </div>
                           <p className="text-gray-700 leading-relaxed">
                             {shortage.description}
                           </p>
@@ -298,12 +357,15 @@ export default function HospitalDetailPage() {
                       <div className="px-8 pb-6">
                         <div className="bg-white rounded-2xl p-6 border border-gray-100">
                           <div className="flex items-center justify-between mb-4">
-                            <div className="text-sm font-semibold text-gray-700">Funding Progress</div>
+                            <div className="text-sm font-semibold text-gray-700">
+                              Funding Progress
+                            </div>
                             <div className="text-sm text-gray-500">
-                              {donationCount} donation{donationCount !== 1 ? "s" : ""} received
+                              {donationCount} donation
+                              {donationCount !== 1 ? "s" : ""} received
                             </div>
                           </div>
-                          
+
                           <div className="mb-4">
                             <div className="flex justify-between items-center mb-2">
                               <span className="text-sm font-medium text-gray-600">
@@ -327,7 +389,10 @@ export default function HospitalDetailPage() {
                               </span>
                               {estimatedFunding > totalDonated && (
                                 <span className="text-xs text-amber-600 font-medium">
-                                  {formatCurrency(estimatedFunding - totalDonated)} remaining
+                                  {formatCurrency(
+                                    estimatedFunding - totalDonated
+                                  )}{" "}
+                                  remaining
                                 </span>
                               )}
                             </div>
@@ -343,12 +408,26 @@ export default function HospitalDetailPage() {
                         className="w-full group/btn relative px-6 py-4 bg-gradient-to-r from-[#143f3f] via-emerald-600 to-[#143f3f] text-white rounded-2xl font-semibold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden"
                       >
                         <div className="relative z-10 flex items-center justify-center gap-3">
-                          <svg className="w-6 h-6 group-hover/btn:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
+                          <svg
+                            className="w-6 h-6 group-hover/btn:scale-110 transition-transform duration-200"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                           </svg>
                           <span>Donate Now</span>
-                          <svg className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          <svg
+                            className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform duration-200"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 7l5 5m0 0l-5 5m5-5H6"
+                            />
                           </svg>
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
@@ -359,17 +438,41 @@ export default function HospitalDetailPage() {
                     <div className="px-8 pb-6 border-t border-gray-100 pt-6">
                       <div className="flex justify-between items-center text-xs text-gray-500">
                         <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
                           </svg>
-                          Posted: {new Date(shortage.datePosted).toLocaleDateString()}
+                          Posted:{" "}
+                          {new Date(shortage.datePosted).toLocaleDateString()}
                         </div>
                         {shortage.expirationDate && (
                           <div className="flex items-center gap-2">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
                             </svg>
-                            Expires: {new Date(shortage.expirationDate).toLocaleDateString()}
+                            Expires:{" "}
+                            {new Date(
+                              shortage.expirationDate
+                            ).toLocaleDateString()}
                           </div>
                         )}
                       </div>

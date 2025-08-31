@@ -307,8 +307,18 @@ export default function DonatePage() {
           onClick={() => router.back()}
           className="inline-flex items-center gap-2 text-[#143f3f] hover:text-emerald-600 font-medium mb-8 px-4 py-2 rounded-full hover:bg-[#143f3f]/10 transition-all duration-300"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back
         </button>
@@ -326,7 +336,8 @@ export default function DonatePage() {
           </h1>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
             Your contribution will help purchase{" "}
-            <span className="font-semibold text-[#143f3f]">{medicine}</span> for patients in need.
+            <span className="font-semibold text-[#143f3f]">{medicine}</span> for
+            patients in need.
           </p>
         </header>
 
@@ -338,9 +349,11 @@ export default function DonatePage() {
                 <h3 className="text-2xl font-bold text-[#143f3f] mb-2">
                   Funding Progress
                 </h3>
-                <p className="text-gray-600">See how close we are to our goal</p>
+                <p className="text-gray-600">
+                  See how close we are to our goal
+                </p>
               </div>
-              
+
               <div className="bg-white rounded-2xl p-6 border border-gray-100">
                 <DonationProgress
                   totalDonated={currentProgress.total_donated}
@@ -351,26 +364,30 @@ export default function DonatePage() {
                 />
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-gray-600">
-                {currentProgress.donation_count} donation
-                {currentProgress.donation_count !== 1 ? "s" : ""} received so
-                far
-              </span>
-              {remainingFunding !== null && (
-                <span
-                  className={`font-medium ${
-                    remainingFunding <= 0 ? "text-green-600" : "text-amber-600"
-                  }`}
-                >
-                  {remainingFunding <= 0
-                    ? "✅ Fully Funded!"
-                    : `${formatCurrency(remainingFunding)} remaining`}
-                </span>
-              )}
+                    {currentProgress.donation_count} donation
+                    {currentProgress.donation_count !== 1 ? "s" : ""} received
+                    so far
+                  </span>
+                  {remainingFunding !== null && (
+                    <span
+                      className={`font-medium ${
+                        remainingFunding <= 0
+                          ? "text-green-600"
+                          : "text-amber-600"
+                      }`}
+                    >
+                      {remainingFunding <= 0
+                        ? "✅ Fully Funded!"
+                        : `${formatCurrency(remainingFunding)} remaining`}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         )}
 
+        {/* Donation Form */}
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <div className="p-4 rounded-xl bg-white border border-stone-200">
             <h2 className="font-medium text-gray-800">Amount</h2>
